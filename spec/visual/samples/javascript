@@ -6,6 +6,8 @@ var myRegex = /asdf/;
 var myComplicatedRegex = /.[.](?=x\h\[[)])[^.{}abc]{foo}{3,}x{2,3}/
 var myObject = { a: 1, b: 2 }
 
+const myConst = "Hello";
+
 var ternary = 0 ? 1 : {object_key : 2 ? variable : 3 };
 var ternary2 = a ? { object_key : c } + variable : e;
 var ternary3 = a ? {
@@ -149,3 +151,6 @@ function* range(from, to)
     yield from++;
   }
 }
+
+// template strings
+var str = html`<p>${var1}, ${20+6}, ${echo("test")} \${lit} $\{lit}</p>`;

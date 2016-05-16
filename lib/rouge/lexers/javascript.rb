@@ -159,8 +159,7 @@ module Rouge
         rule /[0-9][0-9]*\.[0-9]+([eE][0-9]+)?[fd]?/, Num::Float
         rule /0x[0-9a-fA-F]+/, Num::Hex
         rule /[0-9]+/, Num::Integer
-        rule /"(\\\\|\\"|[^"])*"/, Str::Double
-        rule /'(\\\\|\\'|[^'])*'/, Str::Single
+        mixin :strings
       end
 
       # braced parts that aren't object literals
@@ -199,6 +198,25 @@ module Rouge
         end
 
         mixin :root
+      end
+
+      state :strings do
+        rule /"(\\\\|\\"|[^"])*"/, Str::Double
+        rule /'(\\\\|\\'|[^'])*'/, Str::Single
+        rule /(\w+)?`/, Str::Backtick, :simple_backtick
+      end
+
+      state :in_interp do
+        rule /}/, Str::Interpol, :pop!
+        mixin :root
+      end
+
+      # backtick string interpolation
+      state :simple_backtick do
+        rule /(?<!\\)[$][{]/, Str::Interpol, :in_interp
+        rule /[^$]+/m, Str::Backtick
+        rule /[\\$]/, Str::Backtick
+        rule /`/, Str::Backtick, :pop!
       end
     end
 
